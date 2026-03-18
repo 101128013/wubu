@@ -1,0 +1,22 @@
+﻿{
+  "mcpServers": {
+    "filesystem": {
+      "command": "node",
+      "description": "Filesystem access"
+    },
+    "shell": {
+      "command": "shell",
+      "description": "Shell execution"
+    },
+    "web": {
+      "command": "web",
+      "description": "Web requests"
+    }
+  },
+  "osintTools": {
+    "emailSearch": { "enabled": true },
+    "usernameExtraction": { "enabled": true },
+    "domainAnalysis": { "enabled": true },
+    "socialGraphing": { "enabled": true }
+  }
+}

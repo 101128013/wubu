@@ -1,0 +1,11 @@
+﻿{
+  "providers": {
+    "osintProviders": [
+      { "name": "Email Discovery", "enabled": true },
+      { "name": "Username Tracking", "enabled": true },
+      { "name": "Domain Intelligence", "enabled": true },
+      { "name": "Social Graphing", "enabled": true },
+      { "name": "Content Analysis", "enabled": true }
+    ]
+  }
+}
