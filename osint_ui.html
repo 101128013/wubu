@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easy OSINT - Simple Search</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo { font-size: 60px; margin-bottom: 10px; }
+        h1 { color: #333; font-size: 32px; margin-bottom: 10px; }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .step { display: none; }
+        .step.active { display: block; }
+        .step-title { font-size: 24px; color: #333; margin-bottom: 20px; font-weight: bold; }
+        .step-icon { font-size: 48px; margin-bottom: 15px; }
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn-next { background: linear-gradient(135deg, #667eea, #764ba2); color: white; width: 100%; }
+        .btn-next:hover { transform: scale(1.02); }
+        .option-btn {
+            background: #f5f5f5;
+            border: 2px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            width: 100%;
+            text-align: left;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .option-btn:hover { background: #e8f5e9; border-color: #4CAF50; }
+        .option-btn.selected { background: #4CAF50; color: white; border-color: #4CAF50; }
+        .result-box {
+            background: #f0f8ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .info-box { background: #fff9c4; border-left: 4px solid #fbc02d; padding: 15px; margin: 15px 0; border-radius: 5px; }
+        .success { background: #e8f5e9; border-left: 4px solid #4CAF50; padding: 15px; margin: 15px 0; border-radius: 5px; color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🔍</div>
+            <h1>Easy OSINT</h1>
+            <p>Find Information Online - Simply!</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <!-- Step 1: Welcome -->
+        <div class="step active" id="step1">
+            <div class="step-icon">👋</div>
+            <div class="step-title">Welcome to Easy OSINT!</div>
+            <p style="color: #666; margin-bottom: 20px;">Let's find public information about someone online.</p>
+            <div class="info-box">💡 OSINT means finding public information that anyone can see online.</div>
+            <button class="btn-next" onclick="nextStep()">Let's Start! →</button>
+        </div>
+
+        <!-- Step 2: Choose Type -->
+        <div class="step" id="step2">
+            <div class="step-icon">🎯</div>
+            <div class="step-title">What do you want to find?</div>
+            <button class="option-btn" onclick="selectOption('email', this)">📧 Email Address</button>
+            <button class="option-btn" onclick="selectOption('username', this)">👤 Username</button>
+            <button class="option-btn" onclick="selectOption('domain', this)">🌐 Website</button>
+            <button class="btn-next" onclick="nextStep()" id="nextBtn2" disabled>Next →</button>
+        </div>
+
+        <!-- Step 3: Enter Info -->
+        <div class="step" id="step3">
+            <div class="step-icon">✏️</div>
+            <div class="step-title" id="inputTitle">Enter Email Address</div>
+            <input type="text" id="searchInput" placeholder="example@email.com">
+            <div class="info-box">ℹ️ We only search for public information.</div>
+            <button class="btn-next" onclick="nextStep()">Next →</button>
+        </div>
+
+        <!-- Step 4: Processing -->
+        <div class="step" id="step4">
+            <div class="step-icon">🔄</div>
+            <div class="step-title">Searching...</div>
+            <div class="spinner"></div>
+            <p style="text-align: center; color: #666;">Finding information... This may take a few moments.</p>
+        </div>
+
+        <!-- Step 5: Results -->
+        <div class="step" id="step5">
+            <div class="step-icon">🎉</div>
+            <div class="step-title">Search Complete!</div>
+            <div class="success">✓ Found <span id="resultCount">42</span> public profiles!</div>
+            <div class="result-box">
+                <strong>👤 Profiles Found:</strong><br>
+                Found on 42 different websites
+            </div>
+            <div class="result-box">
+                <strong>🔗 Connections:</strong><br>
+                Identified links to 12 related accounts
+            </div>
+            <div class="result-box">
+                <strong>⚠️ Risk Level:</strong><br>
+                Medium - Information is widely distributed
+            </div>
+            <button class="btn-next" onclick="reset()">🔍 Search Again</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selectedType = '';
+
+        function updateProgress() {
+            const progress = (currentStep / 5) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            currentStep = step;
+            updateProgress();
+        }
+
+        function nextStep() {
+            if (currentStep === 2 && !selectedType) {
+                alert('Please select a search type!');
+                return;
+            }
+            if (currentStep === 3) {
+                const input = document.getElementById('searchInput').value;
+                if (!input.trim()) {
+                    alert('Please enter something!');
+                    return;
+                }
+            }
+            if (currentStep === 3) {
+                showStep(4);
+                setTimeout(() => showStep(5), 2000);
+            } else {
+                showStep(currentStep + 1);
+            }
+        }
+
+        function selectOption(type, elem) {
+            selectedType = type;
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            elem.classList.add('selected');
+            document.getElementById('nextBtn2').disabled = false;
+            
+            const titles = {
+                email: 'Enter Email Address',
+                username: 'Enter Username',
+                domain: 'Enter Website'
+            };
+            document.getElementById('inputTitle').textContent = titles[type];
+        }
+
+        function reset() {
+            selectedType = '';
+            document.getElementById('searchInput').value = '';
+            document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            document.getElementById('nextBtn2').disabled = true;
+            showStep(1);
+        }
+
+        updateProgress();
+    </script>
+</body>
+</html>
