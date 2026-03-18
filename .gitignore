@@ -1,0 +1,108 @@
+﻿# Investigation Results - LOCAL ONLY
+# ===================================
+# CRITICAL: Never commit investigation results to GitHub
+# These files contain sensitive OSINT data and should remain local only
+
+# Investigation result files
+*_results.json
+level_*_results.json
+level_*_results.txt
+level_*_results.html
+investigation_results/
+osint_results/
+results/
+
+# Investigation reports
+INVESTIGATION_REPORT.txt
+INVESTIGATION_REPORT.html
+INVESTIGATION_REPORT.json
+investigation_*.txt
+investigation_*.html
+investigation_*.json
+
+# Consolidated reports
+consolidated_report.json
+consolidated_report.txt
+consolidated_report.html
+executive_summary.txt
+final_report.json
+
+# Session data
+session_*/
+*_session_*.json
+session_results/
+
+# Temporary investigation files
+*.tmp
+*.temp
+*_temp_*
+investigation.tmp
+
+# Cached investigation data
+.cache/
+cache/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local investigation database
+osint_results.db
+osint_*.db
+investigation.db
+
+# Log files from investigations
+osint_investigation.log
+investigation_*.log
+*.log
+
+# Data exports (local only)
+export_*.csv
+export_*.json
+export_*.xlsx
+data_export/
+
+# Archive files
+*.zip
+*.tar
+*.gz
+investigation_archive/
+
+# Sensitive local files
+secrets.json
+config.local.json
+.env
+.env.local
+credentials.json
+
+# User-specific investigation data
+user_data/
+personal_results/
+local_findings/
+
+# Backup files from investigations
+*.bak
+*_backup.*
+investigation_backup/
+
+# IDE temporary files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+.directory
+
+# Python
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Node modules
+node_modules/
+package-lock.json
